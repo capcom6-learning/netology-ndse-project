@@ -10,7 +10,23 @@ class Response {
     }
 }
 
+class SuccessResponse extends Response {
+    constructor(data) {
+        super(ResponseStatus.OK, data);
+    }
+}
+
+class ErrorResponse extends Response {
+    constructor(error) {
+        super(ResponseStatus.ERROR, {
+            error: error,
+        });
+    }
+}
+
 module.exports = {
     ResponseStatus,
     Response,
+    SuccessResponse,
+    ErrorResponse,
 }

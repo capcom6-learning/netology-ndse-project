@@ -19,3 +19,41 @@ Content-Type: application/json
   "email": "kulagin@netology.ru",
   "password": "ad service"
 }
+
+###
+GET {{baseUrl}}/advertisements HTTP/1.1
+
+###
+GET {{baseUrl}}/advertisements/507f1f77bcf86cd799439012 HTTP/1.1
+
+###
+GET {{baseUrl}}/advertisements/not-found HTTP/1.1
+
+###
+POST {{baseUrl}}/advertisements HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="shortTitle"
+
+Продам слона
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+kulagin@netology.ru
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="slon_v_profil.jpg"
+Content-Type: image/jpeg
+
+< ./assets/slon_v_profil.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="slon_v_fas.jpg"
+Content-Type: image/jpeg
+
+< ./assets/slon_v_fas.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="slon_hobot.jpg"
+Content-Type: image/jpeg
+
+< ./assets/slon_hobot.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
