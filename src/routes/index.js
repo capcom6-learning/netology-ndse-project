@@ -1,4 +1,4 @@
-const { NotFoundError, ConflictError, ValidationError } = require("../errors");
+const { NotFoundError, ConflictError, ValidationError, AuthorizationError, AuthenticationError } = require("../errors");
 const { ErrorResponse } = require("./domain");
 
 const router = require("express").Router();
@@ -14,6 +14,10 @@ router.use((error, req, res, next) => {
         res.status(400);
     } else if (error instanceof ConflictError) {
         res.status(409);
+    } else if (error instanceof AuthorizationError) {
+        res.status(403);
+    } else if (error instanceof AuthenticationError) {
+        res.status(401);
     } else {
         console.error(error);
         res.status(500);

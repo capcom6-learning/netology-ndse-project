@@ -1,13 +1,6 @@
 const { NotFoundError } = require("../errors");
 
-const users = {
-    "507f1f77bcf86cd799439011": {
-        id: "507f1f77bcf86cd799439011",
-        email: "kulagin@netology.ru",
-        name: "Alex Kulagin",
-        contactPhone: "+7 123 456 78 90"
-    },
-};
+const users = {};
 
 const get = (id) => {
     if (!users[id]) {

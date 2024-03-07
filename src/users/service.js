@@ -1,6 +1,9 @@
+const argon2 = require("argon2");
+
 const { ValidationError, ConflictError } = require("../errors");
 const { validateEmail, validatePhoneNumber, normalizeEmail, normalizePhoneNumber } = require("../utils/validators");
 const users = require("./repository");
+const { UserModel } = require("./domain");
 
 /*
 {
@@ -47,18 +50,51 @@ const validate = (user) => {
     return user;
 };
 
-const create = (user) => {
+const create = async (user) => {
     user = validate(user);
 
     if (users.find({ email: user.email }).length > 0) {
         throw new ConflictError("User with this email already exists");
     }
 
-    const id = users.insert(user);
+    const userModel = new UserModel(
+        null,
+        user.email,
+        await argon2.hash(user.password),
+        user.name,
+        user.contactPhone
+    );
+
+    const id = users.insert(userModel);
 
     return users.get(id);
 };
 
+const findByEmail = async (email) => {
+    const found = users.find({ email });
+
+    if (found.length === 0) {
+        return null;
+    }
+
+    return found[0];
+};
+
+const authorize = async (email, password) => {
+    const user = await findByEmail(email);
+    if (!user) {
+        return null;
+    }
+
+    if (!argon2.verify(user.passwordHash, password)) {
+        return null;
+    }
+
+    return user;
+};
+
 module.exports = {
     create,
+    findByEmail,
+    authorize,
 };

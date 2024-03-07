@@ -19,7 +19,23 @@ class ConflictError extends Error {
     }
 }
 
+class AuthorizationError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "AuthorizationError";
+    }
+}
+
+class AuthenticationError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "AuthenticationError";
+    }
+}
+
 module.exports = {
+    AuthorizationError,
+    AuthenticationError,
     NotFoundError,
     ValidationError,
     ConflictError,
