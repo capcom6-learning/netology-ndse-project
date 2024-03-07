@@ -4,23 +4,22 @@ const ResponseStatus = {
 }
 
 class Response {
-    constructor(status, data) {
+    constructor(status) {
         this.status = status;
-        this.data = data;
     }
 }
 
 class SuccessResponse extends Response {
     constructor(data) {
-        super(ResponseStatus.OK, data);
+        super(ResponseStatus.OK);
+        this.data = data;
     }
 }
 
 class ErrorResponse extends Response {
     constructor(error) {
-        super(ResponseStatus.ERROR, {
-            error: error,
-        });
+        super(ResponseStatus.ERROR);
+        this.error = error.toString();
     }
 }
 
