@@ -53,7 +53,7 @@ const validate = (user) => {
 const create = async (user) => {
     user = validate(user);
 
-    if (users.find({ email: user.email }).length > 0) {
+    if (users.select({ email: user.email }).length > 0) {
         throw new ConflictError("User with this email already exists");
     }
 
@@ -71,7 +71,7 @@ const create = async (user) => {
 };
 
 const findByEmail = async (email) => {
-    const found = users.find({ email });
+    const found = users.select({ email });
 
     if (found.length === 0) {
         return null;

@@ -34,8 +34,16 @@ module.exports = {
                 if (err) { return next(err) }
                 return next();
             });
-            next();
+
+            // next();
         })(req, res, next);
     },
     authBySession: passport.authenticate("session"),
+    requireUser: (req, res, next) => {
+        if (!req.user) {
+            next(new AuthenticationError("User is not authorized"));
+            return;
+        }
+        next();
+    }
 };

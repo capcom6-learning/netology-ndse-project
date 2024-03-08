@@ -1,7 +1,8 @@
 const multer = require("multer");
-const { Response, ResponseStatus, ErrorResponse, SuccessResponse } = require("./domain");
-
 const router = require("express").Router();
+
+const { Response, ResponseStatus, ErrorResponse, SuccessResponse } = require("./domain");
+const { authBySession, requireUser } = require("../middlewares/passport");
 
 router.get("/", (req, res) => {
     const data = [
@@ -21,10 +22,7 @@ router.get("/", (req, res) => {
             createdAt: "2020-12-12T10:00:00.000Z"
         }
     ];
-    const response = new Response(
-        ResponseStatus.OK,
-        data
-    );
+    const response = new SuccessResponse(data);
 
     res.status(200).json(response).end();
 });
@@ -53,17 +51,16 @@ router.get('/:id', (req, res) => {
         },
         createdAt: "2020-12-12T10:00:00.000Z"
     };
-    const response = new Response(
-        ResponseStatus.OK,
-        data
-    );
+    const response = new SuccessResponse(data);
 
     res.status(200).json(response).end();
 });
 
-router.post('/', multer().any(), (req, res) => {
-    console.log(req.files);
-    console.log(req.body);
+router.post('/', requireUser, multer().any(), (req, res) => {
+    // console.log(req.isAuthenticated());
+    // console.log(req.user);
+    // console.log(req.files);
+    // console.log(req.body);
 
     const data = {
         id: "507f1f77bcf86cd799439012",
@@ -85,7 +82,7 @@ router.post('/', multer().any(), (req, res) => {
     res.status(201).json(response).end();
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', requireUser, (req, res) => {
     res.status(204).end();
 });
 

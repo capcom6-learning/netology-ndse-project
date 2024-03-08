@@ -10,7 +10,7 @@ const get = (id) => {
     return users[id];
 };
 
-const find = (filter) => {
+const select = (filter) => {
     const filterFn = (item) => {
         for (const key in filter) {
             if (filter[key] !== item[key]) {
@@ -31,6 +31,6 @@ const insert = (user) => {
 
 module.exports = {
     get,
-    find,
+    select,
     insert,
 };

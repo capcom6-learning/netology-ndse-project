@@ -57,3 +57,6 @@ Content-Type: image/jpeg
 
 < ./assets/slon_hobot.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+DELETE {{baseUrl}}/advertisements/507f1f77bcf86cd799439012 HTTP/1.1
