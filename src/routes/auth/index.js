@@ -11,7 +11,10 @@ router.post('/signup', async (req, res) => {
         new UserPayload(user.id, user.email, user.name, user.contactPhone)
     );
 
-    res.status(201).json(response).end();
+    req.logIn(user, async (err) => {
+        if (err) { return next(err) }
+        res.status(201).json(response).end();
+    });
 });
 
 router.post('/signin', authByCredentials, (req, res) => {

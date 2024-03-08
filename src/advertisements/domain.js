@@ -11,3 +11,7 @@ class Advertisement {
         this.isDeleted = isDeleted || false;
     }
 }
+
+module.exports = {
+    Advertisement,
+};

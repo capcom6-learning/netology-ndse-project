@@ -14,11 +14,12 @@ const advertisements = {
             id: "507f1f77bcf86cd799439011",
             name: "Alex Kulagin"
         },
-        createdAt: "2020-12-12T10:00:00.000Z"
+        createdAt: "2020-12-12T10:00:00.000Z",
+        isDeleted: false
     },
 };
 
-const get = (id) => {
+const get = async (id) => {
     if (!advertisements[id]) {
         throw new NotFoundError("Advertisement not found");
     }
@@ -26,7 +27,7 @@ const get = (id) => {
     return advertisements[id];
 };
 
-const select = (filter) => {
+const select = async (filter) => {
     const filterFn = (item) => {
         for (const key in filter) {
             if (filter[key] !== item[key]) {
@@ -39,13 +40,13 @@ const select = (filter) => {
     return Object.values(advertisements).filter(filterFn);
 };
 
-const insert = (advertisement) => {
+const insert = async (advertisement) => {
     const id = Math.random().toString(16).slice(2);
     advertisements[id] = { ...advertisement, id };
     return id;
 };
 
-const remove = (id) => {
+const remove = async (id) => {
     if (!advertisements[id]) {
         return;
     }
