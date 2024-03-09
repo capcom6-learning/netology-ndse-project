@@ -42,6 +42,14 @@ Content-Disposition: form-data; name="description"
 
 kulagin@netology.ru
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="tags"
+
+животные
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="tags"
+
+слоновьи
+------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="images"; filename="slon_v_profil.jpg"
 Content-Type: image/jpeg
 

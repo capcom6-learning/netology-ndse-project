@@ -1,23 +1,6 @@
 const { NotFoundError } = require("../errors");
 
-const advertisements = {
-    "507f1f77bcf86cd799439012": {
-        id: "507f1f77bcf86cd799439012",
-        shortTitle: "Продам слона",
-        description: "kulagin@netology.ru",
-        images: [
-            "/uploads/507f1f77bcf86cd799439011/slon_v_profil.jpg",
-            "/uploads/507f1f77bcf86cd799439011/slon_v_fas.jpg",
-            "/uploads/507f1f77bcf86cd799439011/slon_hobot.jpg"
-        ],
-        user: {
-            id: "507f1f77bcf86cd799439011",
-            name: "Alex Kulagin"
-        },
-        createdAt: "2020-12-12T10:00:00.000Z",
-        isDeleted: false
-    },
-};
+const advertisements = {};
 
 const get = async (id) => {
     if (!advertisements[id]) {

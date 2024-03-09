@@ -5,15 +5,6 @@ const { validateEmail, validatePhoneNumber, normalizeEmail, normalizePhoneNumber
 const users = require("./repository");
 const { UserModel } = require("./domain");
 
-/*
-{
-  "email": "kulagin@netology.ru",
-  "password": "ad service",
-  "name": "Alex Kulagin",
-  "contactPhone": "+7 123 456 78 90"
-}
-*/
-
 const validatePassword = (password) => {
     if (password.length < 8) {
         return false;
@@ -65,13 +56,17 @@ const create = async (user) => {
         user.contactPhone
     );
 
-    const id = users.insert(userModel);
+    const id = await users.insert(userModel);
 
     return users.get(id);
 };
 
+const get = async (id) => {
+    return await users.get(id);
+};
+
 const findByEmail = async (email) => {
-    const found = users.select({ email });
+    const found = await users.select({ email });
 
     if (found.length === 0) {
         return null;
@@ -94,7 +89,8 @@ const authorize = async (email, password) => {
 };
 
 module.exports = {
-    create,
+    get,
     findByEmail,
+    create,
     authorize,
 };
