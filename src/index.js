@@ -1,25 +1,48 @@
 const config = require("./config");
 
+const mongoose = require("mongoose");
 const express = require("express");
-const session = require("express-session");
 require('express-async-errors');
 
+const session = require("./middlewares/session");
 const logger = require("./middlewares/logger");
 const { authBySession } = require("./middlewares/passport");
 
-const app = express();
+function createExpressApp() {
+    const app = express();
 
-app.use(logger);
+    app.use(logger);
+    app.use(session({
+        secret: config.SESSION_SECRET,
+        mongoUrl: config.MONGO_URL,
+    }));
+    app.use(authBySession);
+    app.use("/api", express.json(), require("./routes"));
 
-app.use(session({
-    cookie: { maxAge: 7200 * 1000 },
-    secret: config.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
-}));
-app.use(authBySession);
-app.use("/api", express.json(), require("./routes"));
+    return app;
+}
 
-app.listen(config.PORT, () => {
-    console.log(`Server started at http://127.0.0.1:${config.PORT}`);
-});
+async function connect() {
+    mongoose.set('debug', config.DEBUG);
+    return mongoose.connect(config.MONGO_URL);
+}
+
+async function main() {
+    const app = createExpressApp();
+    await connect();
+    console.log("MongoDB connected");
+
+    app.listen(
+        config.HTTP_PORT,
+        config.HTTP_HOST,
+        () => {
+            console.log(`Server started at http://${config.HTTP_HOST}:${config.HTTP_PORT}`);
+        }
+    );
+}
+
+main()
+    .catch(err => {
+        console.error(err);
+        process.exit(1);
+    });

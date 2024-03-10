@@ -3,7 +3,6 @@ const argon2 = require("argon2");
 const { ValidationError, ConflictError } = require("../errors");
 const { validateEmail, validatePhoneNumber, normalizeEmail, normalizePhoneNumber } = require("../utils/validators");
 const users = require("./repository");
-const { UserModel } = require("./domain");
 
 const validatePassword = (password) => {
     if (password.length < 8) {
@@ -12,7 +11,6 @@ const validatePassword = (password) => {
 
     return true;
 };
-
 
 const validate = (user) => {
     if (!user.email) {
@@ -44,21 +42,14 @@ const validate = (user) => {
 const create = async (user) => {
     user = validate(user);
 
-    if (users.select({ email: user.email }).length > 0) {
+    if ((await users.select({ email: user.email })).length > 0) {
         throw new ConflictError("User with this email already exists");
     }
 
-    const userModel = new UserModel(
-        null,
-        user.email,
-        await argon2.hash(user.password),
-        user.name,
-        user.contactPhone
-    );
-
-    const id = await users.insert(userModel);
-
-    return users.get(id);
+    return await users.insert({
+        ...user,
+        passwordHash: await argon2.hash(user.password),
+    });
 };
 
 const get = async (id) => {

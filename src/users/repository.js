@@ -1,32 +1,22 @@
 const { NotFoundError } = require("../errors");
 
-const users = {};
+const { User } = require("./models");
 
 const get = async (id) => {
-    if (!users[id]) {
+    const user = await User.findById(id);
+    if (!user) {
         throw new NotFoundError("User not found");
     }
-
-    return users[id];
+    return user;
 };
 
 const select = async (filter) => {
-    const filterFn = (item) => {
-        for (const key in filter) {
-            if (filter[key] !== item[key]) {
-                return false;
-            }
-        }
-        return true;
-    };
-
-    return Object.values(users).filter(filterFn);
+    return User.find(filter);
 };
 
 const insert = async (user) => {
-    const id = Math.random().toString(16).slice(2);
-    users[id] = { ...user, id };
-    return id;
+    const userModel = new User(user);
+    return await userModel.save();
 };
 
 module.exports = {

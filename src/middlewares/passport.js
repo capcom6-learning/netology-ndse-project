@@ -17,11 +17,16 @@ passport.use(new LocalStrategy({
 
 
 passport.serializeUser((user, done) => {
-    done(null, user);
+    process.nextTick(() => {
+        done(null, { id: user.id, name: user.name });
+    });
+
 });
 
 passport.deserializeUser((user, done) => {
-    done(null, user);
+    process.nextTick(() => {
+        done(null, user);
+    });
 });
 
 module.exports = {
