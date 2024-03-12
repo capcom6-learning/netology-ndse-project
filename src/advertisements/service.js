@@ -1,24 +1,19 @@
 const { UserModule } = require("../users");
 
-const { Advertisement } = require("./domain");
 const advertisements = require("./repository");
 
+const get = async (id) => {
+    const advertisement = await advertisements.get(id);
+    return await fillReferences(advertisement);
+};
+
 const find = async (params) => {
-    const data = await advertisements.select(params);
+    const data = await advertisements.select({ ...params, isDeleted: false });
     return Promise.all(data.map(async advertisement => await fillReferences(advertisement)));
 };
 
 const create = async (data) => {
-    const advertisement = new Advertisement(
-        {
-            ...data,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            isDeleted: false,
-        }
-    );
-
-    advertisement.id = await advertisements.insert(advertisement);
+    const advertisement = await advertisements.insert(data);
 
     return await fillReferences(advertisement);
 };
@@ -28,6 +23,7 @@ const remove = async (id) => {
 };
 
 const fillReferences = async (data) => {
+    //  TODO: optimize users linking
     if (data.userId) {
         const user = await UserModule.get(data.userId);
         data.user = {
@@ -40,6 +36,7 @@ const fillReferences = async (data) => {
 };
 
 module.exports = {
+    get,
     find,
     create,
     remove,

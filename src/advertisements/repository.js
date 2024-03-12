@@ -1,39 +1,60 @@
+const { ObjectId } = require("mongodb");
+
 const { NotFoundError } = require("../errors");
 
-const advertisements = {};
+const { Advertisement } = require("./models");
 
 const get = async (id) => {
-    if (!advertisements[id]) {
+    if (!ObjectId.isValid(id)) {
         throw new NotFoundError("Advertisement not found");
     }
 
-    return advertisements[id];
+    const advertisement = Advertisement.findById(id);
+    if (!advertisement) {
+        throw new NotFoundError("Advertisement not found");
+    }
+    return advertisement;
 };
 
-const select = async (filter) => {
-    const filterFn = (item) => {
-        for (const key in filter) {
-            if (filter[key] !== item[key]) {
-                return false;
-            }
-        }
-        return true;
-    };
+const select = async ({ shortText, description, userId, tags, isDeleted }) => {
+    // shortText — поиск регулярным выражением;
+    // description — поиск регулярным выражением;
+    // userId — точное совпадение;
+    // tags — значение в базе данных должно включать все искомые значения.
+    const filter = {};
 
-    return Object.values(advertisements).filter(filterFn);
+    if (shortText) {
+        filter.shortText = new RegExp(shortText, "i");
+    }
+
+    if (description) {
+        filter.description = new RegExp(description, "i");
+    }
+
+    if (userId) {
+        filter.userId = userId;
+    }
+
+    if (tags) {
+        filter.tags = { $all: tags };
+    }
+
+    if (isDeleted !== undefined) {
+        filter.isDeleted = isDeleted;
+    }
+
+    console.log(filter);
+
+    return Advertisement.find(filter);
 };
 
 const insert = async (advertisement) => {
-    const id = Math.random().toString(16).slice(2);
-    advertisements[id] = { ...advertisement, id };
-    return id;
+    const advertisementModel = new Advertisement(advertisement);
+    return await advertisementModel.save();
 };
 
 const remove = async (id) => {
-    if (!advertisements[id]) {
-        return;
-    }
-    delete advertisements[id];
+    await Advertisement.updateOne({ _id: id }, { isDeleted: true });
 };
 
 module.exports = {
