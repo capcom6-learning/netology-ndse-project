@@ -31,20 +31,14 @@ const remove = async (id) => {
 const fillReferences = async (data) => {
     //  TODO: optimize users linking
     if (data.userId) {
-        try {
-            const user = await UserModule.get(data.userId);
-            data.user = {
-                id: user.id,
-                name: user.name,
-            };
-        } catch (error) {
-            if (error instanceof NotFoundError) {
-                data.user = {
-                    id: data.userId,
-                    name: 'Unknown user',
-                };
-            }
-        }
+        const user = await UserModule.get(data.userId);
+        data.user = user ? {
+            id: user.id,
+            name: user.name,
+        } : {
+            id: data.userId,
+            name: 'Unknown user',
+        };
     }
 
     return data;
