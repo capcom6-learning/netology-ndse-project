@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: advertisements-app
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGO_URL=mongodb://mongo:27017/advertisements
+    depends_on:
+      - mongo
+    volumes:
+      - uploads:/usr/app/uploads
+    networks:
+      - app-network
+
+  mongo:
+    container_name: mongo
+    image: mongo:7
+    ports:
+      - "3001:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=advertisements
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  uploads:
+    driver: local
+  mongo-data:
+    driver: local

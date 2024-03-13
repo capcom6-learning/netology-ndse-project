@@ -1,3 +1,4 @@
+const fs = require("fs");
 const router = require("express").Router();
 
 const config = require("../../config");
@@ -55,6 +56,9 @@ router.delete('/:id', requireUser, async (req, res) => {
     }
 
     await Advertisement.remove(id);
+    advertisement.images.forEach(image => {
+        fs.unlinkSync(image.substring(1));
+    });
 
     const response = new SuccessResponse();
     res.status(200).json(response).end();

@@ -67,4 +67,4 @@ Content-Type: image/jpeg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###
-DELETE {{baseUrl}}/advertisements/65f14646709a24e110a3ccdb HTTP/1.1
+DELETE {{baseUrl}}/advertisements/65f14da0ed8a67c0bf1a9e13 HTTP/1.1
