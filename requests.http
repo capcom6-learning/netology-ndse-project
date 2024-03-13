@@ -24,7 +24,7 @@ Content-Type: application/json
 GET {{baseUrl}}/advertisements HTTP/1.1
 
 ###
-GET {{baseUrl}}/advertisements/65f144d721d62b4e0bd13cd4 HTTP/1.1
+GET {{baseUrl}}/advertisements/65f1972f7f912f83b1c98189 HTTP/1.1
 
 ###
 GET {{baseUrl}}/advertisements/not-found HTTP/1.1
@@ -67,4 +67,4 @@ Content-Type: image/jpeg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###
-DELETE {{baseUrl}}/advertisements/65f14da0ed8a67c0bf1a9e13 HTTP/1.1
+DELETE {{baseUrl}}/advertisements/65f1972f7f912f83b1c98189 HTTP/1.1
