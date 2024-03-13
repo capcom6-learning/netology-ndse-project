@@ -1,8 +1,14 @@
+const { ObjectId } = require("mongodb");
+
 const { NotFoundError } = require("../errors");
 
 const { User } = require("./models");
 
 const get = async (id) => {
+    if (!ObjectId.isValid(id)) {
+        throw new NotFoundError("User not found");
+    }
+
     const user = await User.findById(id);
     if (!user) {
         throw new NotFoundError("User not found");

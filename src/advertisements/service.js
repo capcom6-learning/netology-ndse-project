@@ -1,9 +1,15 @@
+const { NotFoundError } = require("../errors");
 const { UserModule } = require("../users");
 
 const advertisements = require("./repository");
 
 const get = async (id) => {
     const advertisement = await advertisements.get(id);
+
+    if (!advertisement) {
+        throw new NotFoundError("Advertisement not found");
+    }
+
     return await fillReferences(advertisement);
 };
 
@@ -25,11 +31,20 @@ const remove = async (id) => {
 const fillReferences = async (data) => {
     //  TODO: optimize users linking
     if (data.userId) {
-        const user = await UserModule.get(data.userId);
-        data.user = {
-            id: user.id,
-            name: user.name,
-        };
+        try {
+            const user = await UserModule.get(data.userId);
+            data.user = {
+                id: user.id,
+                name: user.name,
+            };
+        } catch (error) {
+            if (error instanceof NotFoundError) {
+                data.user = {
+                    id: data.userId,
+                    name: 'Unknown user',
+                };
+            }
+        }
     }
 
     return data;

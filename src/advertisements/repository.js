@@ -43,8 +43,6 @@ const select = async ({ shortText, description, userId, tags, isDeleted }) => {
         filter.isDeleted = isDeleted;
     }
 
-    console.log(filter);
-
     return Advertisement.find(filter);
 };
 

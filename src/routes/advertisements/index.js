@@ -4,6 +4,7 @@ const config = require("../../config");
 const { requireUser } = require("../../middlewares/passport");
 const upload = require("../../middlewares/upload");
 const { Advertisement } = require("../../advertisements");
+const { AuthorizationError } = require("../../errors");
 
 const { SuccessResponse } = require("../domain");
 
@@ -46,8 +47,17 @@ router.post('/', requireUser, upload(config.UPLOAD_PATH).array("images"), async 
 
 router.delete('/:id', requireUser, async (req, res) => {
     const id = req.params.id;
+    const user = req.user;
+    const advertisement = await Advertisement.get(id);
+
+    if (advertisement.userId !== user.id) {
+        throw new AuthorizationError('You are not allowed to delete this advertisement');
+    }
+
     await Advertisement.remove(id);
-    res.status(204).end();
+
+    const response = new SuccessResponse();
+    res.status(200).json(response).end();
 });
 
 module.exports = router;
