@@ -41,8 +41,8 @@ async function main() {
     );
 }
 
-process.on('SIGTERM', process.exit);
-process.on('SIGINT', process.exit);
+process.on('SIGTERM', () => process.exit(0));
+process.on('SIGINT', () => process.exit(0));
 main()
     .catch(err => {
         console.error(err);
