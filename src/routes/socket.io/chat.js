@@ -2,9 +2,15 @@ const { Chat } = require("../../chat");
 
 const register = (io, socket) => {
     const user = socket.request.user;
-    // const user = { id: "65f197257f912f83b1c98185" };
+    console.log(user);
 
     Chat.subscribe((data) => {
+        const users = data.users;
+
+        if (!users.includes(user.id)) {
+            return;
+        }
+
         socket.emit("newMessage", data.message);
     });
 

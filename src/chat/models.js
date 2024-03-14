@@ -44,7 +44,7 @@ const ChatSchema = new Schema(
     {
         users: {
             type: [mongoose.Types.ObjectId, mongoose.Types.ObjectId],
-            unique: true,
+            // unique: true,
             required: true,
         },
         messages: {

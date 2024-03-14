@@ -1,5 +1,6 @@
 const config = require("./config");
 
+const path = require("path");
 const mongoose = require("mongoose");
 const express = require("express");
 const { createServer } = require("http");
@@ -8,12 +9,11 @@ require('express-async-errors');
 
 const session = require("./middlewares/session");
 const logger = require("./middlewares/logger");
-const { authBySession } = require("./middlewares/passport");
+const { authBySession, requireUser } = require("./middlewares/passport");
 
 function setUpSocket(io) {
     io.on("connection", socket => {
         console.log(`Socket ${socket.id} connected`);
-        // console.log(socket.request);
 
         require("./routes/socket.io").register(io, socket);
     });
@@ -30,11 +30,15 @@ function createExpressApp() {
     const io = new Server(httpServer, {});
     io.engine.use(sessionMiddleware);
     io.engine.use(authBySession);
+    io.engine.use(requireUser);
     setUpSocket(io);
 
     app.use(logger);
     app.use(sessionMiddleware);
     app.use(authBySession);
+    app.get('/', (req, res) => {
+        res.sendFile(path.resolve(__dirname, '..', 'public/index.html'));
+    });
     app.use("/api", express.json(), require("./routes"));
 
     return httpServer;

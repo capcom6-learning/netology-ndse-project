@@ -5,8 +5,8 @@ POST {{baseUrl}}/signup HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "kulagin@netology.ru",
-  "password": "ad service",
+  "email": "test2@example.com",
+  "password": "test2test2",
   "name": "Alex Kulagin",
   "contactPhone": "+7 923 456 78 90"
 }

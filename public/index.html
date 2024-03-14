@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+          crossorigin="anonymous"
+    >
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <title>Socket.IO</title>
+</head>
+<body>
+<div class="container">
+    <h1>Socket.IO</h1>
+    <!--User name and password fields-->
+    <form id="login">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <!--Send message form-->
+    <form id="send">
+        <div class="form-group">
+            <label for="text">Message</label>
+            <input type="text" class="form-control" id="text">
+        </div>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+</div>
+
+<script>
+    const socket = io.connect('/');
+
+    socket.on('newMessage', (msg) => {
+        console.log('newMessage', msg);
+    });
+
+    socket.on('chatHistory', (history) => {
+        console.log('chatHistory', history);
+    });
+
+   document.querySelector('#login').addEventListener('submit', async (event) => {
+       event.preventDefault();
+       const email = document.querySelector('#username').value;
+       const password = document.querySelector('#password').value;
+
+       const response = await fetch('/api/signin', {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json'
+           },
+           body: JSON.stringify({
+               email,
+               password
+           })
+       });
+       const user = await response.json();
+       console.log(user);
+
+       
+   });
+
+    document.querySelector('#send').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const text = document.querySelector('#text').value;
+        socket.emit('sendMessage', {
+            text,
+            receiver: "65f29aa0d564093fbab8f942",
+        });
+        document.querySelector('#text').value = '';
+    });
+
+    // const socket = io.connect('/');
+
+    
+
+    // const roomName = location.pathname.split('/').pop();
+    // const socket = io.connect('/', {query: `roomName=${roomName}`});
+    
+    // const boxList       = document.querySelector('#list');
+    // const inputUsername = document.querySelector('#username');
+    // const inputText     = document.querySelector('#text');
+    // const sendAll       = document.querySelector('#send-all');
+    // const sendMe        = document.querySelector('#send-me');
+    // const sendRoom      = document.querySelector('#send-room');
+
+    // const getTmp = (msg) => {
+    //     return `
+    //             <div class="list-group-item list-group-item-action">
+    //                 <div class="d-flex w-100 justify-content-between">
+    //                     <small>${msg.username}</small>
+    //                     <small class="text-muted">${msg.type}</small>
+    //                 </div>
+    //                 <p class="mb-1">${msg.text}</p>
+    //             </div>
+    //     `;
+    // };
+
+    // socket.on('message-to-me', (msg) => {
+    //     const div = getTmp(msg)
+    //     boxList.insertAdjacentHTML('beforeend', div)
+    // });
+
+    // sendMe.addEventListener('click', () => {
+    //     socket.emit('message-to-me', {
+    //         username: inputUsername.value,
+    //         text: inputText.value,
+    //     })
+    // })
+
+    // socket.on('message-to-all', (msg) => {
+    //     const div = getTmp(msg)
+    //     boxList.insertAdjacentHTML('beforeend', div)
+    // });
+
+    // sendAll.addEventListener('click', () => {
+    //     socket.emit('message-to-all', {
+    //         username: inputUsername.value,
+    //         text: inputText.value,
+    //     })
+    // })
+
+
+    // socket.on('message-to-room', (msg) => {
+    //     const div = getTmp(msg)
+    //     boxList.insertAdjacentHTML('beforeend', div)
+    // });
+
+    // sendRoom.addEventListener('click', () => {
+    //     socket.emit('message-to-room', {
+    //         username: inputUsername.value,
+    //         text: inputText.value,
+    //     })
+    // })
+
+
+</script>
+
+</body>
+</html>
