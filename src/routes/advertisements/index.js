@@ -51,14 +51,17 @@ router.delete('/:id', requireUser, async (req, res) => {
     const user = req.user;
     const advertisement = await Advertisement.get(id);
 
-    if (advertisement.userId !== user.id) {
+    if (advertisement.userId != user.id) {
         throw new AuthorizationError('You are not allowed to delete this advertisement');
     }
 
+    if (advertisement.isDeleted) {
+        const response = new SuccessResponse();
+        res.status(200).json(response).end();
+        return;
+    }
+
     await Advertisement.remove(id);
-    advertisement.images.forEach(image => {
-        fs.unlinkSync(image.substring(1));
-    });
 
     const response = new SuccessResponse();
     res.status(200).json(response).end();

@@ -1,36 +1,55 @@
 const config = require("./config");
 
+const path = require("path");
 const mongoose = require("mongoose");
 const express = require("express");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 require('express-async-errors');
 
 const session = require("./middlewares/session");
 const logger = require("./middlewares/logger");
-const { authBySession } = require("./middlewares/passport");
+const { authBySession, requireUser } = require("./middlewares/passport");
+
+function setUpSocket(io) {
+    io.on("connection", socket => {
+        console.log(`Socket ${socket.id} connected`);
+
+        require("./routes/socket.io").register(io, socket);
+    });
+}
 
 function createExpressApp() {
-    const app = express();
-
-    app.use(logger);
-    app.use(session({
+    const sessionMiddleware = session({
         secret: config.SESSION_SECRET,
         mongoUrl: config.MONGO_URL,
-    }));
+    });
+
+    const app = express();
+    const httpServer = createServer(app);
+    const io = new Server(httpServer, {});
+    io.engine.use(sessionMiddleware);
+    io.engine.use(authBySession);
+    io.engine.use(requireUser);
+    setUpSocket(io);
+
+    app.use(logger);
+    app.use(sessionMiddleware);
     app.use(authBySession);
     app.use("/api", express.json(), require("./routes"));
 
-    return app;
+    return httpServer;
 }
 
 async function connect() {
     mongoose.set('debug', config.DEBUG);
-    return mongoose.connect(config.MONGO_URL);
+    await mongoose.connect(config.MONGO_URL);
+    console.log("MongoDB connected");
 }
 
 async function main() {
-    const app = createExpressApp();
     await connect();
-    console.log("MongoDB connected");
+    const app = createExpressApp();
 
     app.listen(
         config.HTTP_PORT,
@@ -41,8 +60,8 @@ async function main() {
     );
 }
 
-process.on('SIGTERM', process.exit);
-process.on('SIGINT', process.exit);
+process.on('SIGTERM', () => process.exit(0));
+process.on('SIGINT', () => process.exit(0));
 main()
     .catch(err => {
         console.error(err);

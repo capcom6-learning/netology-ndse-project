@@ -6,14 +6,10 @@ const { Advertisement } = require("./models");
 
 const get = async (id) => {
     if (!ObjectId.isValid(id)) {
-        throw new NotFoundError("Advertisement not found");
+        return null;
     }
 
-    const advertisement = Advertisement.findById(id);
-    if (!advertisement) {
-        throw new NotFoundError("Advertisement not found");
-    }
-    return advertisement;
+    return await Advertisement.findById(id);
 };
 
 const select = async ({ shortText, description, userId, tags, isDeleted }) => {
