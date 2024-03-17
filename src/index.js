@@ -33,7 +33,7 @@ function createExpressApp() {
     io.engine.use(requireUser);
     setUpSocket(io);
 
-    app.use(logger);
+    app.use(logger({ debug: config.DEBUG }));
     app.use(sessionMiddleware);
     app.use(authBySession);
     app.use("/api", express.json(), require("./routes"));
